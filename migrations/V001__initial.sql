@@ -21,8 +21,7 @@ CREATE TABLE IF NOT EXISTS dataset.paper (
     year text,
     page_start text,
     page_end text,
-
-    n_citation bigint /* NOT NULL ? */
+    n_citation bigint
 );
 
 CREATE TABLE IF NOT EXISTS dataset.author (
@@ -33,17 +32,8 @@ CREATE TABLE IF NOT EXISTS dataset.author (
     bio text,
     email text,
     position text,
-    /* homepage text, -- only three occurences in the entire dataset */
     name text,
     orcid text
-
-    /*oid text,*/
-    /*gid text,*/
-
-    /* name_zh text, -- 2603 occurences */
-    /* oid_zh text, -- 233 occurences */
-    /* org_zh text, -- 4k occurences */
-    /* orgid bytea, -- not sure what to do with this id */
 );
 
 CREATE TABLE IF NOT EXISTS dataset.org (

@@ -2,8 +2,6 @@ import argparse
 import json
 import psycopg
 import os
-
-from contextlib import closing
 from tqdm import tqdm
 
 UPLOAD_CHUNK_SIZE = 8 * 1024 * 1024
@@ -41,11 +39,7 @@ def create_connection(cfg_path):
 
 
 def upload_table(cursor, table_name, table_path):
-    copy_query = psycopg.sql.SQL(
-        f'COPY dataset.{table_name} FROM STDIN CSV HEADER'
-        #"COPY {} FROM STDIN CSV HEADER").format(
-        #psycopg.sql.Identifier(SCHEMA_NAME + '.' + table_name)
-    )
+    copy_query = psycopg.sql.SQL(f'COPY dataset.{table_name} FROM STDIN CSV HEADER')
     total_size = os.stat(table_path).st_size
     with open(table_path) as f, tqdm(total=total_size, desc=table_name, unit_scale=True) as pbar:
         chunk = f.read(UPLOAD_CHUNK_SIZE)

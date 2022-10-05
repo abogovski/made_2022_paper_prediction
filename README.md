@@ -9,12 +9,12 @@
 
 ## Setting up database schema
 ```bash
-python tools/client/apply_sql.py migrations/V001__initial.sql cfg/local-db.json
+python tools/client/apply_sql.py migrations/V001__initial.sql cfg/localdb.json
 ```
 
 ## Uploading dataset
 ```bash
 mkdir data/csv_tables
 python tools/dataset_parsing/collect_csv_tables.py data/dblpv13.json data/csv_tables/
-python tools/client/bulk_upload.py data/csv_tables/ cfg/local-db.json
+python tools/client/bulk_upload.py data/csv_tables/ cfg/localdb.json
 ```
