@@ -61,7 +61,7 @@ def collect_orgs(author):
     elif author.get('orgs_zh'):
         orgs.extend(author['orgs_zh'])
 
-    return set(filter(bool, orgs))
+    return set(filter(bool, map(normalize, orgs)))
 
 
 def main():
@@ -78,14 +78,14 @@ def main():
                 writer.write('paper', paper)
 
                 for author in paper.get('authors', []):
-                    author_created = ensure_value_or_make_unknown(author, 'name', ['name', 'name_zh'])
+                    ensure_value_or_make_unknown(author, 'name', ['name', 'name_zh'])
+                    author_created = write_if_firstmet(writer, entity_id_mapping, author, 'author', 'name')
                     if author_created:  # WRN: possible loss of orgs
-                        write_if_firstmet(writer, entity_id_mapping, author, 'author', 'name')
                         writer.write('paper_author', {'paper_id': paper['paper_id'], 'author_id': author['author_id']})
-                        for org in scollect_orgs(author):
-                            ensure_value_or_make_unknown(org, 'name', ['name'])
+                        for org in collect_orgs(author):
+                            org = {'name': org}
                             write_if_firstmet(writer, entity_id_mapping, org, 'org', 'name')
-                            writer.write('paper_org', {'paper_id': paper['paper_id'], 'org_id': org['org_id']})
+                            writer.write('author_org', {'author_id': author['author_id'], 'org_id': org['org_id']})
 
                 venue = paper.get('venue')
                 if venue:
