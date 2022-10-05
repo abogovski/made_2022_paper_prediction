@@ -1,0 +1,7 @@
+{
+    "host": "localhost",
+    "port": 5433,
+    "dbname": "paper_prediction",
+    "user": "team_14",
+    "password": "local_team14_password"
+}
