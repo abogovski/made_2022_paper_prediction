@@ -18,3 +18,6 @@ mkdir data/csv_tables
 python tools/dataset_parsing/collect_csv_tables.py data/dblpv13.json data/csv_tables/
 python tools/client/bulk_upload.py data/csv_tables/ cfg/localdb.json
 ```
+
+## Database schema
+![alt text](db-schema.svg?raw=true)
