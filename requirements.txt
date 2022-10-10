@@ -1,2 +1,2 @@
-psycopg>=3
+psycopg-binary>=3
 streamlit>=1.13
