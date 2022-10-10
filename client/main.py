@@ -81,7 +81,7 @@ def render_paper(cursor, paper_id):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('config')
+    parser.add_argument('--config')
     parser.add_argument('--default-paper-id', default=2)
     args = parser.parse_args()
 

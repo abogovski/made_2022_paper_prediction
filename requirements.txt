@@ -1,1 +1,2 @@
 psycopg>=3
+streamlit>=1.13
