@@ -1,0 +1,7 @@
+{
+    "host": "34.116.206.9",
+    "port": 5432,
+    "dbname": "paper_prediction",
+    "user": "made_guest",
+    "password": "made_guest"
+}
