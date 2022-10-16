@@ -36,14 +36,14 @@ def add_bulk_upload_parser(subparsers):
         help='Bulk-upload csv tables to database',
     )
     parser.add_argument(
-        'database_config',
-        help='Path to database connection config file',
-        type=argparse.FileType('r'),
-    )
-    parser.add_argument(
         'csv_tables',
         help='Path to csv_tables directory',
         type=str,
+    )
+    parser.add_argument(
+        'database_config',
+        help='Path to database connection config file',
+        type=argparse.FileType('r'),
     )
 
 
