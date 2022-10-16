@@ -3,17 +3,20 @@
 ## Local database management
 
 ```bash
-./localdb/setup.sh # create local standalone cluster with blank paper_prediction database
-./localdb/teardown.sh # teardown local standalone cluster
+./localdb/reset.sh # reset localdb & setup schema
+./localdb/teardown.sh # teardown localdb
 ```
 
-## Setting up database schema
+## Setting up database schema manually
 ```bash
 python tools/client/apply_sql.py migrations/V001__initial.sql cfg/localdb.json
 ```
 
 ## Uploading dataset
 ```bash
+wget https://originalstatic.aminer.cn/misc/dblp.v13.7z -O data/dblpv13.7z
+7z x data/dblpv13.7z -odata/
+
 mkdir data/csv_tables
 python tools/dataset_parsing/collect_csv_tables.py data/dblpv13.json data/csv_tables/
 python tools/client/bulk_upload.py data/csv_tables/ cfg/localdb.json

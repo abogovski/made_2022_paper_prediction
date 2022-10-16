@@ -1,0 +1,11 @@
+version: "3.3"
+services:
+  paper_prediction_localdb:
+    image: postgres:15
+    ports:
+      - "6432:5432"
+    environment:
+      POSTGRES_PORT: 6432
+      POSTGRES_DB: paper_prediction
+      POSTGRES_USER: team_14
+      POSTGRES_PASSWORD: local_team14_password
