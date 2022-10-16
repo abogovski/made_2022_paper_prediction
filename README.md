@@ -9,7 +9,7 @@
 
 ## Setting up database schema manually
 ```bash
-python tools/client/apply_sql.py migrations/V001__initial.sql cfg/localdb.json
+python -m tools/dbclient apply_sql cfg/localdb.json migrations/V001__initial.sql
 ```
 
 ## Uploading dataset
@@ -19,7 +19,7 @@ wget https://originalstatic.aminer.cn/misc/dblp.v13.7z -O data/dblpv13.7z
 
 mkdir data/csv_tables
 python tools/dataset_parsing/collect_csv_tables.py data/dblpv13.json data/csv_tables/
-python tools/client/bulk_upload.py data/csv_tables/ cfg/localdb.json
+python -m tools/dbclient bulk_upload cfg/localdb.json data/csv_tables/
 ```
 
 ## Setting update local streamlit

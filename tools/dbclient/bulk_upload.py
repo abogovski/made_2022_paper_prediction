@@ -1,5 +1,3 @@
-import argparse
-import json
 import psycopg
 import os
 from tqdm import tqdm
@@ -30,14 +28,6 @@ def check_all_csv_files_exists(csv_tables_path):
         assert os.path.isfile(csv_fpath), f'Missing regular file: {csv_fpath}'
 
 
-def create_connection(cfg_path):
-    with open(cfg_path) as f:
-        cfg = json.load(f)
-
-    conn_str = ' '.join(f'{key}={value}' for key, value in cfg.items())
-    return psycopg.connect(conn_str)
-
-
 def upload_table(cursor, table_name, table_path):
     copy_query = psycopg.sql.SQL(f'COPY dataset.{table_name} FROM STDIN CSV HEADER')
     total_size = os.stat(table_path).st_size
@@ -50,20 +40,6 @@ def upload_table(cursor, table_name, table_path):
                 chunk = f.read(UPLOAD_CHUNK_SIZE)
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('csv_tables_path')
-    parser.add_argument('db_cfg')
-    args = parser.parse_args()
-
-    check_all_csv_files_exists(args.csv_tables_path)
-
-    with create_connection(args.db_cfg) as connection:
-        with connection.cursor() as cursor:
-            for table_name, csv_fname in TABLES.items():
-                upload_table(cursor, table_name, os.path.join(args.csv_tables_path, csv_fname))
-            connection.commit()
-
-
-if __name__ == '__main__':
-    main()
+def upload_all_tables(cursor, csv_tables_path):
+    for table_name, csv_fname in TABLES.items():
+        upload_table(cursor, table_name, os.path.join(csv_tables_path, csv_fname))
