@@ -21,7 +21,7 @@ python -m tools.dataset_parsing collect_csv_tables data/dblpv13.json data/csv_ta
 python -m tools.dbclient bulk_upload data/csv_tables/ cfg/localdb.json
 ```
 
-## Setting update local streamlit
+## Setting up local streamlit
 
 ```
 streamlit run client/main.py cfg/remotedb-readaccess.json
