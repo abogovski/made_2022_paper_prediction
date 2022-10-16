@@ -1,6 +1,7 @@
 import argparse
 import json
 import streamlit as st
+import streamlit_authenticator as stauth
 import psycopg
 import os
 
@@ -93,6 +94,7 @@ def main():
         with connection.cursor() as cursor:
             render_paper(cursor, paper_id)
             connection.rollback()
+
 
 if __name__ == '__main__':
     main()

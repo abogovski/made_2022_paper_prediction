@@ -5,7 +5,7 @@ PGUSR=team_14
 export PGPASSWORD=local_team14_password
 
 CLUSTER_NAME=made_papers_localdb
-CLUSTER_VERSION=10
+CLUSTER_VERSION=12
 
 mkdir "$LOCALDB_DIR"
 sudo chown postgres "$LOCALDB_DIR"
