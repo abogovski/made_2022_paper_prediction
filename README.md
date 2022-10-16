@@ -3,8 +3,8 @@
 ## Local database management
 
 ```bash
-./localdb/reset.sh # reset localdb & setup schema
-./localdb/teardown.sh # teardown localdb
+./tools/localdb/reset.sh # reset localdb & setup schema
+./tools/localdb/teardown.sh # teardown localdb
 ```
 
 ## Setting up database schema manually
