@@ -19,13 +19,13 @@ def add_apply_sql_parser(subparsers):
         help='Apply sql file to database',
     )
     parser.add_argument(
-        'database_config',
-        help='Path to database connection config file',
+        'sql_file',
+        help='Sql File',
         type=argparse.FileType('r'),
     )
     parser.add_argument(
-        'sql_file',
-        help='Sql File',
+        'database_config',
+        help='Path to database connection config file',
         type=argparse.FileType('r'),
     )
 

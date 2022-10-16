@@ -9,7 +9,7 @@
 
 ## Setting up database schema manually
 ```bash
-python -m tools.dbclient apply_sql cfg/localdb.json migrations/V001__initial.sql
+python -m tools.dbclient apply_sql migrations/V001__initial.sql cfg/localdb.json
 ```
 
 ## Uploading dataset
