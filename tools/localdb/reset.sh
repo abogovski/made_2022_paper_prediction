@@ -13,7 +13,7 @@ until psql "$CONN_STR" -c "SELECT TRUE" >/dev/null 2>&1; do
 done
 echo
 
-for FNAME in $(find ../migrations -name "V*__*.sql" | sort); do
+for FNAME in $(find ../../migrations -name "V*__*.sql" | sort); do
     echo "Applying $(basename $FNAME) migration"
     psql "$CONN_STR" -f $FNAME
 done
