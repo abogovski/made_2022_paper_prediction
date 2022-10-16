@@ -1,7 +1,5 @@
-import argparse
 from collections import defaultdict, deque, Counter
-
-from dataset import read_dataset
+from .dataset import read_dataset
 
 
 def get_flat_field_types(obj):
@@ -31,20 +29,11 @@ def save_schema(path, schema):
             )
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('dataset_path')
-    parser.add_argument('schema_path')
-    args = parser.parse_args()
-
+def collect_json_schema(dataset_path, schema_path):
     try:
         schema = defaultdict(Counter)
-        for entry in read_dataset(args.dataset_path):
+        for entry in read_dataset(dataset_path):
             for field_key, field_type in get_flat_field_types(entry):
                 schema[field_key][field_type.__name__] += 1
     finally:
-        save_schema(args.schema_path, schema)
-
-
-if __name__ == '__main__':
-    main()
+        save_schema(schema_path, schema)

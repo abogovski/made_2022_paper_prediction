@@ -1,11 +1,12 @@
 import argparse
+from contextlib import closing
 import json
 import psycopg
 from .bulk_upload import upload_all_tables
 
 
 def create_connection(cfg_file):
-    with cfg_file as f:
+    with closing(cfg_file) as f:
         cfg = json.load(f)
 
     conn_str = ' '.join(f'{key}={value}' for key, value in cfg.items())
@@ -56,7 +57,7 @@ def main():
     with create_connection(args.database_config) as connection:
         with connection.cursor() as cursor:
             if args.command == 'apply_sql':
-                with args.sql_file as f:
+                with closing(args.sql_file) as f:
                     queries = f.read()
                 cursor.execute(queries)
 

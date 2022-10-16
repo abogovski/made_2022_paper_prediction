@@ -1,10 +1,10 @@
-import argparse
 from contextlib import closing
+import os
 
-from dataset import read_dataset
-from entity_id_mapping import EntityIdMapping
-from multi_csv_writer import MultiCsvWriter
-from csv_schema import CSV_SCHEMA
+from .dataset import read_dataset
+from .entity_id_mapping import EntityIdMapping
+from .multi_csv_writer import MultiCsvWriter
+from .csv_schema import CSV_SCHEMA
 
 
 ENTITY_IDENTS = {
@@ -64,15 +64,11 @@ def collect_orgs(author):
     return set(filter(bool, map(normalize, orgs)))
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('dataset_path')
-    parser.add_argument('csv_tables_path')
-    args = parser.parse_args()
-
-    with closing(MultiCsvWriter(args.csv_tables_path, CSV_SCHEMA)) as writer:
-        with closing(EntityIdMapping(args.csv_tables_path, ENTITY_IDENTS)) as entity_id_mapping:
-            for paper in read_dataset(args.dataset_path):
+def collect_csv_tables(dataset_path, csv_tables_dir):
+    os.makedirs(csv_tables_dir, exist_ok=True)
+    with closing(MultiCsvWriter(csv_tables_dir, CSV_SCHEMA)) as writer:
+        with closing(EntityIdMapping(csv_tables_dir, ENTITY_IDENTS)) as entity_id_mapping:
+            for paper in read_dataset(dataset_path):
                 paper['paper_id'], _ = entity_id_mapping['paper'][paper['_id']]
                 paper['abstract'] = replace_null_chars(paper.get('abstract')) # NOTE: null characters cause problems on upload to postgres
                 writer.write('paper', paper)
@@ -106,7 +102,3 @@ def main():
 
                 for url in set(map(str.strip, paper.get('urls', []))):
                     writer.write('paper_url', {'paper_id': paper['paper_id'], 'url': url})
-
-
-if __name__ == '__main__':
-    main()
