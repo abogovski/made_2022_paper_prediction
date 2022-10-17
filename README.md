@@ -1,15 +1,41 @@
 # MADE 2022: Paper prediction project
 
-## Local database management
+## Development
+
+### Setting up local database
+
+Reset `paper_prediction_localdb` container and apply migrations:
 
 ```bash
-./tools/localdb/reset.sh # reset localdb & setup schema
-./tools/localdb/teardown.sh # teardown localdb
+./tools/localdb/reset.sh
 ```
 
-## Setting up database schema manually
+On ubuntu database should accessable via
 ```bash
-python -m tools.dbclient apply_sql migrations/V001__initial.sql cfg/localdb.json
+PGPASSWORD=local_team14_password psql "host=localhost port=6432 dbname=paper_prediction user=team_14"
+```
+and
+```bash
+python -m tools.dbclient apply_sql file.sql cfg/localdb.json
+```
+
+### Development container
+
+Reset/created development container using local repository snapshot
+```base
+./tools/development_container/reset.sh
+```
+
+Directory `./data` is mounted as writeable docker volume.
+```
+./tools/development_container/exec.sh touch /paper_prediction/data/newfile.txt
+ls data/newfile.txt
+```
+
+Local database is available over docker network
+```
+./tools/development_container/exec.sh \
+  python -m tools.dbclient apply_sql container-file.sql cfg/localdb-development.json
 ```
 
 ## Uploading dataset

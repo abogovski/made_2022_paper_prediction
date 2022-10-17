@@ -1,0 +1,16 @@
+version: "3.5"
+services:
+  paper_prediction_development:
+    image: paper_prediction/development
+    build:
+      context: ../..
+      dockerfile: tools/development_container/Dockerfile
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    volumes:
+        - ../../data:/paper_prediction/data
+
+networks:
+  default:
+     name: paper_prediction_localdb_network
+     external: true

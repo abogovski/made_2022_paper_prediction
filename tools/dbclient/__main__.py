@@ -13,6 +13,14 @@ def create_connection(cfg_file):
     return psycopg.connect(conn_str)
 
 
+def apply_sql(cursor, queries):
+    cursor.execute(queries)
+    while True:
+        print(cursor.statusmessage)
+        if not cursor.nextset():
+            break
+
+
 def add_apply_sql_parser(subparsers):
     parser = subparsers.add_parser(
         'apply_sql',
@@ -59,7 +67,7 @@ def main():
             if args.command == 'apply_sql':
                 with closing(args.sql_file) as f:
                     queries = f.read()
-                cursor.execute(queries)
+                apply_sql(cursor, queries)
 
             elif args.command == 'bulk_upload':
                 upload_all_tables(cursor, args.csv_tables)
@@ -67,7 +75,7 @@ def main():
             else:
                 raise RuntimeError(f'Unexpected command {args.command}')
 
-        connection.commit()
+            connection.commit()
 
 
 if __name__ == '__main__':

@@ -1,5 +1,7 @@
 cd $(dirname $0)
 docker-compose down
+
+docker network create paper_prediction_network
 docker-compose build --no-cache
 docker-compose up --detach --force-recreate
 
