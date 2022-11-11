@@ -15,7 +15,8 @@ def check_hashes(password, hashed_text):
 
 
 def add_userdata(connection, cursor, username, password):
-    cursor.execute('INSERT INTO userstable(username,password) VALUES (%s, %s)', (username, password))
+    cursor.execute('INSERT INTO userstable(user_id, username,password) VALUES (nextval("users_seq"), %s, %s)',
+                   (username, password))
     connection.commit()
 
 
