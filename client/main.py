@@ -1,59 +1,6 @@
 import argparse
-import json
 import streamlit as st
-import psycopg
-import os
-
-
-def get_config(args):
-    if args.config is None:
-        return {
-            'host':     os.environ['PAPER_DB_HOST'],
-            'port':     os.environ['PAPER_DB_PORT'],
-            'dbname':   os.environ['PAPER_DB_NAME'],
-            'user':     os.environ['PAPER_DB_USER'],
-            'password': os.environ['PAPER_DB_PASSWORD']
-        }
-
-    with open(args.config) as f:
-        return json.load(f)
-
-
-def create_connection(cfg):
-    conn_str = ' '.join(f'{key}={value}' for key, value in cfg.items())
-    return psycopg.connect(conn_str)
-
-
-def load_paper(cursor, paper_id):
-    columns = ('paper_id', 'doi', 'title', 'abstract')
-    cursor.execute(
-        f'''
-        SELECT {', '.join(columns)}
-        FROM dataset.paper
-        WHERE paper_id = {paper_id}
-        '''
-    )
-    papers = cursor.fetchall()
-    if len(papers) != 1:
-        raise RuntimeError(f'{len(papers)} papers found by id={paper_id}')
-    return dict(zip(columns, papers[0]))
-
-
-def load_authors(cursor, paper_id):
-    columns = ('author_id', 'name', 'position', 'email')
-    assert type(paper_id) == int
-    cursor.execute(
-        f'''
-        SELECT {', '.join(columns)}
-        FROM dataset.paper_author JOIN dataset.author USING (author_id)
-        WHERE paper_id = {paper_id}
-        '''
-    )
-
-    authors = []
-    for values in cursor.fetchall():
-        authors.append(dict(zip(columns, values)))
-    return authors
+from utils import *
 
 
 def render_paper(cursor, paper_id):
@@ -61,6 +8,9 @@ def render_paper(cursor, paper_id):
     st.title(f'Paper {paper_id}')
     if paper['title'] is not None:
         st.header(paper['title'])
+
+    if paper['year'] is not None:
+        st.write('Year: ' + paper['year'])
 
     if paper['doi'] is not None:
         st.write('DOI: ' + paper['doi'])
@@ -79,20 +29,78 @@ def render_paper(cursor, paper_id):
         st.write(paper['abstract'])
 
 
+def search_form(cursor):
+    with st.form("my_form"):
+        st.write("Choose paper parameters:")
+        year_input = st.text_input(label='Year')
+        abstract = st.checkbox('Abstract is not empty', value=True)
+        title = st.checkbox('Title is not empty', value=True)
+
+        submitted = st.form_submit_button("Submit")
+
+    if submitted:
+        num_rows = 5
+        paper_ids = load_paper_ids(cursor, year_input, abstract, title, num_rows)
+        search_len = len(paper_ids)
+        num_rows = min(search_len, num_rows)
+        paper_ids = paper_ids[:num_rows]
+
+        if num_rows == 0:
+            st.title(f'Nothing found')
+            return
+        st.title(f'Found {num_rows} papers')
+
+        with st.container():
+            for paper_id in paper_ids:
+                paper = load_paper(cursor, paper_id)
+                with st.expander(paper['title']):
+                    render_paper(cursor, paper_id)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--config')
     parser.add_argument('--default-paper-id', default=2)
     args = parser.parse_args()
 
+    connection = create_connection(get_config(args))
+    cursor = connection.cursor()
+
     params = st.experimental_get_query_params()
     paper_id = int(params.get('paper_id', [args.default_paper_id])[0])
     st.experimental_set_query_params(paper_id=paper_id)
 
-    with create_connection(get_config(args)) as connection:
-        with connection.cursor() as cursor:
-            render_paper(cursor, paper_id)
-            connection.rollback()
+    st.title("Team 14")
+    menu = ["Home", "Login", "SignUp"]
+    choice = st.sidebar.selectbox("Menu", menu)
+
+    if choice == "Home":
+        st.subheader("Home")
+
+    elif choice == "Login":
+        username = st.sidebar.text_input("User Name")
+        password = st.sidebar.text_input("Password", type='password')
+        if st.sidebar.checkbox("Login"):
+            hashed_pswd = make_hashes(password)
+
+            result = login_user(cursor, username, check_hashes(password, hashed_pswd))
+            if result:
+                st.success("Logged In as {}".format(username))
+                search_form(cursor)
+                connection.rollback()
+            else:
+                st.warning("Incorrect Username/Password")
+
+    elif choice == "SignUp":
+        st.subheader("Create New Account")
+        new_user = st.text_input("Username")
+        new_password = st.text_input("Password", type='password')
+
+        if st.button("Signup"):
+            add_userdata(connection, cursor, new_user, make_hashes(new_password))
+            st.success("You have successfully created a valid Account")
+            st.info("Go to Login Menu to login")
+
 
 if __name__ == '__main__':
     main()
