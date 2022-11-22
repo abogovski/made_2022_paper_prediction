@@ -1,7 +1,7 @@
 Train-test-split method
 ---
 ### Algorithm description
-Algorithm is described in report.md
+Algorithm is described in [report.md](https://github.com/abogovski/made_2022_paper_prediction/blob/train_test_split/tools/train_test_split_method/report.md)
 
 ### Final result
 Ids of papers are stored in `outputs/test_paper_id_csv` and 
