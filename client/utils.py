@@ -2,6 +2,7 @@ import hashlib
 import os
 import json
 import psycopg
+import pandas as pd
 
 
 def make_hashes(password):
@@ -15,21 +16,38 @@ def check_hashes(password, hashed_text):
 
 
 def add_userdata(connection, cursor, username, password):
-    cursor.execute('INSERT INTO userstable(user_id, username,password) VALUES (nextval("users_seq"), %s, %s)',
+    cursor.execute('INSERT INTO users(user_id, username, password) VALUES (nextval(\'users_seq\'), %s, %s)',
                    (username, password))
     connection.commit()
 
 
 def login_user(cursor, username, password):
-    cursor.execute('SELECT * FROM userstable WHERE username =%s AND password = %s', (username, password))
+    cursor.execute('SELECT * FROM users WHERE username =%s AND password = %s', (username, password))
     data = cursor.fetchall()
     return data
 
 
 def view_all_users(cursor):
-    cursor.execute('SELECT * FROM userstable')
+    cursor.execute('SELECT * FROM users')
     data = cursor.fetchall()
     return data
+
+
+def load_chart(cursor):
+    columns = ('position', 'n_citation', 'tag')
+    cursor.execute(
+        f'''
+        SELECT {', '.join(columns)}
+        FROM dataset.top_10_author
+        '''
+    )
+    data = cursor.fetchall()
+    chart = {}
+    for name, n_cit, tag in data:
+        if tag not in chart:
+            chart[tag] = []
+        chart[tag].append([n_cit, name])
+    return chart
 
 
 def load_paper(cursor, paper_id):

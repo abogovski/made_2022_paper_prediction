@@ -1,6 +1,6 @@
 {
-    "host": "paper_prediction_localdb",
-    "port": 5432,
+    "host": "localhost",
+    "port": 6432,
     "dbname": "paper_prediction",
     "user": "team_14",
     "password": "local_team14_password"

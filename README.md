@@ -42,9 +42,20 @@ Local database is available over docker network
 ```bash
 wget https://originalstatic.aminer.cn/misc/dblp.v13.7z -O data/dblpv13.7z
 7z x data/dblpv13.7z -odata/
+```
 
+Download archive with tags
+`https://drive.google.com/file/d/1H5FqXsP2qPuXwjFw6M9qJr784ivWOS2r/view?usp=share_link`
+extract `.csv` data and move to `/data/csv_tables/paper_tags.csv`
+
+```
 python -m tools.dataset_parsing collect_csv_tables data/dblpv13.json data/csv_tables/
 python -m tools.dbclient bulk_upload data/csv_tables/ cfg/localdb.json
+```
+
+## Uploading tags info
+```bash
+./tools/analytics_builder/exec.sh 
 ```
 
 ## Setting up local streamlit
