@@ -61,5 +61,5 @@ python -m tools.dbclient bulk_upload data/csv_tables/ cfg/localdb.json
 ## Setting up local streamlit
 
 ```
-streamlit run client/main.py cfg/remotedb-readaccess.json
+streamlit run client/main.py -- --config cfg/localdb.json 
 ```
