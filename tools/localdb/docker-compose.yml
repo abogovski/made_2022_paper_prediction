@@ -5,6 +5,7 @@ services:
     hostname: paper_prediction_localdb
     ports:
       - "6432:5432"
+    shm_size: 4gb
     environment:
       POSTGRES_PORT: 6432
       POSTGRES_DB: paper_prediction

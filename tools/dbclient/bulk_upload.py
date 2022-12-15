@@ -19,6 +19,7 @@ TABLES = {
     'paper_fos':       'paper_fos.csv',
     'paper_keyword':   'paper_keyword.csv',
     'paper_url':       'paper_url.csv',
+    'paper_tags':      'paper_tags.csv'
 }
 
 

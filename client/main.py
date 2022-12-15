@@ -57,6 +57,20 @@ def search_form(cursor):
                     render_paper(cursor, paper_id)
 
 
+def render_chart(tag_data):
+    chart_data = pd.DataFrame.from_records(tag_data, columns=['n_citation', 'name'])
+    st.bar_chart(chart_data, x='name')
+
+
+def chart_form(cursor):
+    chart_data = load_chart(cursor)
+
+    with st.container():
+        for tag, tag_data in chart_data.items():
+            with st.expander(tag):
+                render_chart(tag_data)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--config')
@@ -71,7 +85,7 @@ def main():
     st.experimental_set_query_params(paper_id=paper_id)
 
     st.title("Team 14")
-    menu = ["Home", "Login", "SignUp"]
+    menu = ["Home", "Login", "SignUp", "Tag analytics"]
     choice = st.sidebar.selectbox("Menu", menu)
 
     if choice == "Home":
@@ -100,6 +114,10 @@ def main():
             add_userdata(connection, cursor, new_user, make_hashes(new_password))
             st.success("You have successfully created a valid Account")
             st.info("Go to Login Menu to login")
+
+    elif choice == "Tag analytics":
+        st.subheader("Top authors in tag")
+        chart_form(cursor)
 
 
 if __name__ == '__main__':
