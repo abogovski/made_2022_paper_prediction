@@ -63,3 +63,6 @@ python -m tools.dbclient bulk_upload data/csv_tables/ cfg/localdb.json
 ```
 streamlit run client/main.py -- --config cfg/localdb.json 
 ```
+
+## Database schema
+![alt text](db-schema.svg?raw=true)
